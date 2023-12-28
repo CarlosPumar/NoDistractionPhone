@@ -44,17 +44,13 @@ fun BatteryState() {
         else -> Red
     }
 
-    Column (
-        modifier = Modifier
-            .padding(10.dp),
-    ) {
-        Text(
-            text = "${batteryLevel.value}%",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = color
-        )
-    }
+    Text(
+        text = "${batteryLevel.value}%",
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        color = color
+    )
+
 }
 
 private fun getBatteryLevel(context: Context): Int {

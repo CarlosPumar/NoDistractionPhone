@@ -4,13 +4,13 @@ import android.app.usage.UsageStatsManager
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import java.util.Calendar
-
 
 fun launchApp(context: Context, packageName: String) {
     val pm: PackageManager = context.packageManager
@@ -31,16 +31,8 @@ fun getNameAndUsageApps(context: Context, packageNameList: List<String>?): Tripl
 
     val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-    val calendar = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }
-    calendar.add(Calendar.DAY_OF_YEAR, -1)
-
     val endTime = System.currentTimeMillis()
-    val startTime = calendar.timeInMillis
+    val startTime = todayMillis()
 
     val usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime)
 
@@ -53,16 +45,18 @@ fun getNameAndUsageApps(context: Context, packageNameList: List<String>?): Tripl
     val tripleList = mutableListOf<Triple<String, String, String>>()
 
     for (packageName in packageNameList) {
-        for (usage in usageStatsList) {
-            if (packageName == usage.packageName) {
-                val appInfo = packageManager.getApplicationInfo(usage.packageName, 0)
-                val appName = packageManager.getApplicationLabel(appInfo).toString()
-                val usageTime = formatMillisToHoursMinutes(usage.totalTimeInForeground)
 
-                tripleList.add(Triple(appName.replaceFirstChar{char -> char.titlecase() }, usage.packageName, usageTime))
-                break
-            }
+        var usage = usageStatsList.find { it.packageName == packageName }
+
+        var appInfo = packageManager.getApplicationInfo(packageName, 0)
+        var appName = packageManager.getApplicationLabel(appInfo).toString()
+        var usageTime = ""
+
+        if (usage != null) {
+            usageTime = formatMillisToHoursMinutes(usage.totalTimeInForeground)
         }
+
+        tripleList.add(Triple(appName.replaceFirstChar { char -> char.titlecase() }, packageName, usageTime))
     }
 
     val sortedTripleList = tripleList.sortedBy { it.first } // Sorting by appName
@@ -74,20 +68,15 @@ fun getNameAndUsageApps(context: Context, packageNameList: List<String>?): Tripl
     return Triple(sortedNames, sortedPackageNames, sortedUsageTimes)
 }
 
-fun getAllInstalledApps(context: Context): List<ResolveInfo> {
-    // searching main activities labeled to be launchers of the apps
-    val pm = context.packageManager
-    val mainIntent = Intent(Intent.ACTION_MAIN, null)
-    mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+fun isAppLaunchable(context: Context, packageName: String): Boolean {
+    val pm: PackageManager = context.packageManager
+    val launchIntent: Intent? = pm.getLaunchIntentForPackage(packageName)
 
-    val resolvedInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        pm.queryIntentActivities(
-            mainIntent,
-            PackageManager.ResolveInfoFlags.of(0L)
-        )
-    } else {
-        pm.queryIntentActivities(mainIntent, 0)
-    }
-
-    return resolvedInfo
+    return launchIntent != null && pm.queryIntentActivities(launchIntent, 0).isNotEmpty()
 }
+
+fun getAllInstalledApps(context: Context): List<ApplicationInfo> {
+    val installedApps: List<ApplicationInfo> = context.packageManager.getInstalledApplications(0)
+    return installedApps.filter { isAppLaunchable(context, it.packageName) }
+}
+

@@ -27,6 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.pumar.nodistractionphone.utils.addFavApp
+import com.pumar.nodistractionphone.utils.deleteFavApp
+import com.pumar.nodistractionphone.utils.isFavApp
+import com.pumar.nodistractionphone.utils.lengthFavAppList
 import com.pumar.nodistractionphone.utils.parseStringToArray
 import com.pumar.nodistractionphone.utils.stringifyArray
 
@@ -34,31 +38,20 @@ import com.pumar.nodistractionphone.utils.stringifyArray
 fun AppDialog(appName: String, packageName: String, handleClose: () -> Unit, uninstall: (() -> Unit)?) {
 
     val context: Context = LocalContext.current
-    var state = remember { mutableStateOf("-") }
 
-    LaunchedEffect(Unit) {
-        val sharedPrefs = context.getSharedPreferences("favApps", Context.MODE_PRIVATE)
+    var stateDefaultValue = if (isFavApp(context, packageName)) "*" else "-"
+    var state = remember { mutableStateOf(stateDefaultValue) }
 
-        // Accessing stored data
-        var storedValue = sharedPrefs.getString("list", "") ?: ""
-
-        val appList = parseStringToArray(storedValue)
-
-        if (appList.contains(appName)) state.value = "*"
-        else state.value = "-"
-    }
 
     // Function to handle the result after uninstallation
-    val uninstallResultCallback: (Boolean) -> Unit = { isUninstalled ->
+    val uninstallResultCallback = { isUninstalled: Boolean ->
 
         if (isUninstalled) {
             // The app was uninstalled successfully
             // Perform actions after uninstallation here
             if (uninstall != null) uninstall()
+            deleteFavApp(context, packageName)
             handleClose()
-        } else {
-            // Uninstallation was cancelled or failed
-            // Handle this scenario if needed
         }
     }
 
@@ -76,30 +69,16 @@ fun AppDialog(appName: String, packageName: String, handleClose: () -> Unit, uni
     }
 
     fun clickAppToFav(context: Context, packageName: String) {
-        val sharedPrefs = context.getSharedPreferences("favApps", Context.MODE_PRIVATE)
-        val editor = sharedPrefs.edit()
 
-        // Accessing stored data
-        var storedValue = sharedPrefs.getString("list", "") ?: ""
-
-        val appList = parseStringToArray(storedValue)
-        val appMutableList = appList.toMutableList()
-
-        if (appList.contains(packageName)) {
-            appMutableList.remove(packageName)
-            editor.putString("list", stringifyArray(appMutableList.toTypedArray()))
-            editor.apply()
+        if (isFavApp(context, packageName)) {
+            deleteFavApp(context, packageName)
             state.value = "-"
             return
         }
 
-        if (appList.size > 5) {
-            return
-        }
+        if (lengthFavAppList(context) == 5) return
 
-        appMutableList.add(packageName)
-        editor.putString("list", stringifyArray(appMutableList.toTypedArray()))
-        editor.apply()
+        addFavApp(context, packageName)
         state.value = "*"
     }
 
@@ -136,8 +115,7 @@ fun rememberLauncherForUninstall(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         // Check if the uninstallation was successful
-        val isUninstalled = result.resultCode == android.app.Activity.RESULT_OK
-        // Pass the result to the callback function
+        val isUninstalled = result.resultCode == 0
         callback(isUninstalled)
     }
 }

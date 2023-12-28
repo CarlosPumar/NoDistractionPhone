@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -43,18 +44,23 @@ fun ListAllApps() {
 
     val (names, packageNames, usageTimes) = appListState.value
 
-    LaunchedEffect(Unit) {
+    val fetchApps = {
         val installedApps = getAllInstalledApps(context)
-        appListState.value = getNameAndUsageApps(context, installedApps.map { it.activityInfo.packageName })
+        appListState.value = getNameAndUsageApps(context, installedApps.map { it.packageName })
+    }
+
+    LaunchedEffect(Unit) {
+        fetchApps()
     }
 
     if (appToShow.value != "" && packageNameToShow.value != "") {
-        AppDialog(appToShow.value, packageNameToShow.value, hideModal, null)
+        AppDialog(appToShow.value, packageNameToShow.value, hideModal, fetchApps)
     }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .fillMaxWidth()
             .padding(25.dp, 50.dp, 0.dp, 0.dp),
     ) {
         items(names.size) { index ->

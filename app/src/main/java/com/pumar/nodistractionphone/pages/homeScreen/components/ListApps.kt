@@ -1,15 +1,14 @@
 package com.pumar.nodistractionphone.pages.homeScreen.components
 
 import android.app.AppOpsManager
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.provider.Settings
 import android.os.Process
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -73,7 +72,7 @@ fun ListApps() {
 
     if (appList != null) LazyColumn (
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(25.dp, 50.dp, 0.dp, 0.dp),
     ) {
         items(names.size) { index ->
