@@ -20,67 +20,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pumar.nodistractionphone.emptyTripleList
+import com.pumar.nodistractionphone.entities.IApp
 import com.pumar.nodistractionphone.ui.components.App
 import com.pumar.nodistractionphone.ui.components.AppDialog
-import com.pumar.nodistractionphone.utils.getNameAndUsageApps
 import com.pumar.nodistractionphone.utils.parseStringToArray
 
 @Composable
-fun ListApps() {
+fun ListApps(favAppsList: List<IApp>) {
     val context: Context = LocalContext.current
 
     val appToShow = remember { mutableStateOf("") }
     val packageNameToShow = remember { mutableStateOf("") }
 
-    // Accessing stored data
-    var storedValue = remember { mutableStateOf("") }
-    val sharedPrefs = remember { context.getSharedPreferences("favApps", Context.MODE_PRIVATE) }
-
-    // Observe changes in SharedPreferences and update storedValue accordingly
-    DisposableEffect(sharedPrefs) {
-        val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == "list") {
-                storedValue.value = sharedPreferences.getString(key, "") ?: ""
-            }
-        }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
-        storedValue.value = sharedPrefs.getString("list", "") ?: ""
-        onDispose {
-            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
-        }
-    }
-
     LaunchedEffect(context) {
         handleUsageStatsPermission(context)
-    }
-
-    val appList = when {
-        storedValue.value.isNotBlank() -> {
-             parseStringToArray(storedValue.value).toList()
-        }
-        else -> null
     }
 
     var handleShowDialog = {appName: String, packageName: String -> { appToShow.value = appName; packageNameToShow.value = packageName } }
     var hideModal = { appToShow.value = ""; packageNameToShow.value = "" }
 
-    val (names, packageNames, usageTimes) = getNameAndUsageApps(context, appList)
-
     if (appToShow.value != "" && packageNameToShow.value != "") {
         AppDialog(appToShow.value, packageNameToShow.value, hideModal, {})
     }
 
-    if (appList != null) LazyColumn (
+    if (favAppsList != null) LazyColumn (
         modifier = Modifier
             .fillMaxWidth()
             .padding(25.dp, 50.dp, 0.dp, 0.dp),
     ) {
-        items(names.size) { index ->
-            val name = names[index]
-            val packageName = packageNames[index]
-            val usageTime = usageTimes[index]
-
-            App(packageName, name, usageTime, handleShowDialog(name, packageName))
+        items(favAppsList.size) { index ->
+            val it = favAppsList[index]
+            App(it.packageName, it.name, it.usageTime, handleShowDialog(it.name, it.packageName))
         }
     }
 }
@@ -115,5 +86,5 @@ fun handleUsageStatsPermission(context: Context) {
 @Preview
 @Composable
 fun ListAppsPreview() {
-    ListApps()
+    ListApps(emptyList())
 }

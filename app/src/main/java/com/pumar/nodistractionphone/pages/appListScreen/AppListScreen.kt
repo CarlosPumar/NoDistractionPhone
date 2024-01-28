@@ -12,18 +12,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.pumar.nodistractionphone.emptyTripleList
+import com.pumar.nodistractionphone.entities.IApp
 import com.pumar.nodistractionphone.pages.appListScreen.components.ListAllApps
 import com.pumar.nodistractionphone.ui.theme.NoDistractionPhoneTheme
 
 @Composable
-fun AppListScreen() {
-    ListAllApps()
+fun AppListScreen(allAppsList: List<IApp>, updateAllAppList: () -> Unit) {
+    ListAllApps(allAppsList, updateAllAppList)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun AppListScreenPreview() {
     NoDistractionPhoneTheme {
-        AppListScreen()
+        AppListScreen(emptyList(), {})
     }
 }

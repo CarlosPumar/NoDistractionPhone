@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pumar.nodistractionphone.emptyTripleList
+import com.pumar.nodistractionphone.entities.IApp
 import com.pumar.nodistractionphone.pages.homeScreen.components.BatteryState
 import com.pumar.nodistractionphone.pages.homeScreen.components.Clock
 import com.pumar.nodistractionphone.pages.homeScreen.components.Footer
@@ -20,7 +22,11 @@ import com.pumar.nodistractionphone.pages.homeScreen.components.UsageTime
 import com.pumar.nodistractionphone.ui.theme.NoDistractionPhoneTheme
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    phoneUsageTime: Long,
+    favAppsList: List<IApp>,
+    modifier: Modifier = Modifier
+) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -36,8 +42,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             ) {
 
                 Clock()
-                UsageTime()
-                ListApps()
+                UsageTime(phoneUsageTime)
+                ListApps(favAppsList)
             }
             Footer()
         }
@@ -49,6 +55,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 fun HomeScreenPreview() {
 
     NoDistractionPhoneTheme {
-        HomeScreen()
+        HomeScreen(0, emptyList())
     }
 }

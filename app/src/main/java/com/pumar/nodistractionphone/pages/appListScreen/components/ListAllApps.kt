@@ -4,10 +4,14 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -16,19 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pumar.nodistractionphone.emptyTripleList
+import com.pumar.nodistractionphone.entities.IApp
 import com.pumar.nodistractionphone.ui.components.App
 import com.pumar.nodistractionphone.ui.components.AppDialog
 import com.pumar.nodistractionphone.utils.getAllInstalledApps
-import com.pumar.nodistractionphone.utils.getNameAndUsageApps
 
 @Composable
-fun ListAllApps() {
+fun ListAllApps(appList: List<IApp>, fetchApps: () -> Unit) {
 
-    val context: Context = LocalContext.current
-
-    val appListState = remember {
-        mutableStateOf(Triple<List<String>, List<String>, List<String>>(emptyList(), emptyList(), emptyList()))
-    }
     val appToShow = remember { mutableStateOf("") }
     val packageNameToShow = remember { mutableStateOf("") }
 
@@ -42,39 +42,32 @@ fun ListAllApps() {
         packageNameToShow.value = ""
     }
 
-    val (names, packageNames, usageTimes) = appListState.value
-
-    val fetchApps = {
-        val installedApps = getAllInstalledApps(context)
-        appListState.value = getNameAndUsageApps(context, installedApps.map { it.packageName })
-    }
-
-    LaunchedEffect(Unit) {
-        fetchApps()
-    }
-
     if (appToShow.value != "" && packageNameToShow.value != "") {
         AppDialog(appToShow.value, packageNameToShow.value, hideModal, fetchApps)
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .fillMaxWidth()
-            .padding(25.dp, 50.dp, 0.dp, 0.dp),
-    ) {
-        items(names.size) { index ->
-            val name = names[index]
-            val packageName = packageNames[index]
-            val usageTime = usageTimes[index]
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .fillMaxWidth()
+                .padding(25.dp, 50.dp, 0.dp, 0.dp)
+                .verticalScroll(rememberScrollState())
+            ,
+        ) {
+            appList.forEach { it ->
+                App(
+                    it.packageName,
+                    it.name,
+                    it.usageTime,
+                    handleShowDialog(it.name, it.packageName)
+                )
+            }
 
-            App(packageName, name, usageTime, handleShowDialog(name, packageName))
-        }
     }
 }
 
 @Preview
 @Composable
 fun ListAllAppsPreview() {
-    ListAllApps()
+    ListAllApps(emptyList(), {})
 }

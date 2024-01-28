@@ -26,33 +26,7 @@ import java.util.Calendar
 import java.util.TimeZone
 
 @Composable
-fun UsageTime() {
-
-    val context = LocalContext.current
-
-    val usageTime = remember { mutableStateOf<Long>(0) }
-
-    LaunchedEffect(Unit) {
-        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-
-        val endTime = System.currentTimeMillis()
-        val startTime = todayMillis()
-
-        val usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime)
-        val installedApps = getAllInstalledApps(context)
-
-        var newUsageTime: Long = 0
-        for (app in installedApps) {
-            for (usage in usageStatsList) {
-                if (app.packageName == usage.packageName) {
-                    newUsageTime += usage.totalTimeInForeground
-                    break
-                }
-            }
-        }
-
-        usageTime.value = newUsageTime
-    }
+fun UsageTime(phoneUsageTime: Long) {
 
     Box(
         modifier = Modifier
@@ -63,7 +37,7 @@ fun UsageTime() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Tiempo de uso " + formatMillisToHoursMinutes(usageTime.value))
+            Text(text = "Tiempo de uso " + formatMillisToHoursMinutes(phoneUsageTime))
         }
     }
 }

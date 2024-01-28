@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 fun Header() {
 
     Row {
-        BatteryState()
+        //BatteryState()
         SystemSettings(
             Modifier
                 .weight(1f)

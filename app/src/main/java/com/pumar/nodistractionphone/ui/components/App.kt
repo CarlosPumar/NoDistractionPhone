@@ -24,13 +24,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pumar.nodistractionphone.utils.formatMillisToHoursMinutes
 import com.pumar.nodistractionphone.utils.launchApp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App(packageName: String, name: String, usageTime: String, showDialog: () -> Unit?) {
+fun App(packageName: String, name: String, usageTime: Int, showDialog: () -> Unit?) {
 
     val context: Context = LocalContext.current
+
+    var usageTimeString = ""
+    if (usageTime > 1_000 * 60 * 5 ) {
+        usageTimeString = formatMillisToHoursMinutes(usageTime.toLong())
+    }
 
     Row(
         modifier = Modifier
@@ -39,7 +45,7 @@ fun App(packageName: String, name: String, usageTime: String, showDialog: () -> 
         .fillMaxWidth()
     ) {
         Text(
-            text = "$name $usageTime",
+            text = "$name $usageTimeString",
             color = Color.Black,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,

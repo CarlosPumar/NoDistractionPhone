@@ -25,17 +25,14 @@ fun Footer(modifier: Modifier = Modifier) {
 
     val openPhoneApp = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        // Handle the result if needed
-        // You can check result.resultCode and result.data if necessary
-    }
+    ) {}
 
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = "Cámara", modifier = Modifier.clickable {             // Launch the camera in photo mode
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
             takePhoto.launch(intent)
         })
         Text(text = "Teléfono",

@@ -1,5 +1,7 @@
 package com.pumar.nodistractionphone.utils
 
+import android.app.usage.UsageEvents
+import android.app.usage.UsageEvents.Event
 import android.app.usage.UsageStatsManager
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -10,6 +12,7 @@ import android.content.pm.ResolveInfo
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import com.pumar.nodistractionphone.entities.IApp
 import java.util.Calendar
 
 fun launchApp(context: Context, packageName: String) {
@@ -25,58 +28,84 @@ fun launchApp(context: Context, packageName: String) {
     }
 }
 
-fun getNameAndUsageApps(context: Context, packageNameList: List<String>?): Triple<List<String>, List<String>, List<String>>  {
-
+fun getNameFromPackageName(context: Context, packageName: String): String {
     val packageManager: PackageManager = context.packageManager
-
-    val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-
-    val endTime = System.currentTimeMillis()
-    val startTime = todayMillis()
-
-    val usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime)
-
-    val names = mutableListOf<String>()
-    val packageNames = mutableListOf<String>()
-    val usageTimes = mutableListOf<String>()
-
-    if (packageNameList == null) return Triple(names, packageNames, usageTimes)
-
-    val tripleList = mutableListOf<Triple<String, String, String>>()
-
-    for (packageName in packageNameList) {
-
-        var usage = usageStatsList.find { it.packageName == packageName }
-
-        var appInfo = packageManager.getApplicationInfo(packageName, 0)
-        var appName = packageManager.getApplicationLabel(appInfo).toString()
-        var usageTime = ""
-
-        if (usage != null) {
-            usageTime = formatMillisToHoursMinutes(usage.totalTimeInForeground)
-        }
-
-        tripleList.add(Triple(appName.replaceFirstChar { char -> char.titlecase() }, packageName, usageTime))
-    }
-
-    val sortedTripleList = tripleList.sortedBy { it.first } // Sorting by appName
-
-    val sortedNames = sortedTripleList.map { it.first }
-    val sortedPackageNames = sortedTripleList.map { it.second }
-    val sortedUsageTimes = sortedTripleList.map { it.third }
-
-    return Triple(sortedNames, sortedPackageNames, sortedUsageTimes)
+    var appInfo = packageManager.getApplicationInfo(packageName, 0)
+    return packageManager.getApplicationLabel(appInfo).toString()
 }
 
 fun isAppLaunchable(context: Context, packageName: String): Boolean {
     val pm: PackageManager = context.packageManager
     val launchIntent: Intent? = pm.getLaunchIntentForPackage(packageName)
-
     return launchIntent != null && pm.queryIntentActivities(launchIntent, 0).isNotEmpty()
 }
 
-fun getAllInstalledApps(context: Context): List<ApplicationInfo> {
+fun getAllInstalledApps(context: Context): List<IApp> {
     val installedApps: List<ApplicationInfo> = context.packageManager.getInstalledApplications(0)
-    return installedApps.filter { isAppLaunchable(context, it.packageName) }
+    val installedUserApp = installedApps.filter { isAppLaunchable(context, it.packageName) }
+    return installedUserApp.map {
+        IApp(getNameFromPackageName(context, it.packageName), it.packageName, appUsageTime(context, it.packageName))
+    }
 }
 
+fun phoneUsageTime(context: Context): Long {
+    val installedApps = getAllInstalledApps(context)
+
+    var temp = 0L
+    installedApps.forEach {
+        temp += it.usageTime
+    }
+
+    return temp
+}
+
+fun appUsageTime(context: Context, packageName: String): Int {
+
+    val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+    val currentTime = System.currentTimeMillis()
+    val usageEvents = usageStatsManager.queryEvents(todayMillis(), currentTime)
+
+    var eventsList = mutableListOf<Map<String, Any>>()
+
+    val usageEvent = Event()
+    while (usageEvents.hasNextEvent()) {
+        usageEvents.getNextEvent(usageEvent)
+
+        // Filter by packageName
+        if (usageEvent.packageName != packageName) continue
+
+        // Filter by event being toForeground or toBackground
+        if (usageEvent.eventType != 1 && usageEvent.eventType != 2) continue
+
+        // Create a map to represent the event properties
+        val eventMap = mapOf(
+            "packageName" to usageEvent.packageName,
+            "eventType" to usageEvent.eventType,
+            "timeStamp" to usageEvent.timeStamp
+        )
+
+        // Add the map to the list
+        eventsList.add(eventMap)
+    }
+
+    // Sort the list based on timeStamp
+    eventsList.sortBy { it["timeStamp"] as Long }
+
+    var usageTime = 0
+    var init = todayMillis()
+
+    eventsList.forEach { event ->
+        var time = 0
+
+        if (event["eventType"] == 1) {
+            init = event["timeStamp"] as Long
+        } else if (event["eventType"] == 2) {
+            time = (event["timeStamp"] as Long - init).toInt()
+        }
+
+        usageTime += time
+    }
+
+    return usageTime
+}

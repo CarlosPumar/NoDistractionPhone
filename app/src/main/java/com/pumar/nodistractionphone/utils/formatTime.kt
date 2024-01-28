@@ -41,6 +41,5 @@ fun todayMillis(): Long {
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
     }
-    calendar.add(Calendar.DAY_OF_YEAR, -1)
     return calendar.timeInMillis
 }
