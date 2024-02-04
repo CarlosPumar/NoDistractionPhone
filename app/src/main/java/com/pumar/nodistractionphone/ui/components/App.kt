@@ -46,7 +46,6 @@ fun App(packageName: String, name: String, usageTime: Int, showDialog: () -> Uni
     ) {
         Text(
             text = "$name $usageTimeString",
-            color = Color.Black,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             modifier = Modifier

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +21,11 @@ import com.pumar.nodistractionphone.ui.theme.NoDistractionPhoneTheme
 
 @Composable
 fun AppListScreen(allAppsList: List<IApp>, updateAllAppList: () -> Unit) {
-    ListAllApps(allAppsList, updateAllAppList)
+    Surface (
+        color = MaterialTheme.colorScheme.primary // Change the color according to your theme
+    ){
+        ListAllApps(allAppsList, updateAllAppList)
+    }
 }
 
 @Preview(showBackground = true)

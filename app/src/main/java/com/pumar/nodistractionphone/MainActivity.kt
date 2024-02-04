@@ -14,11 +14,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat.getSystemService
@@ -30,6 +33,7 @@ import com.pumar.nodistractionphone.utils.getAllInstalledApps
 import com.pumar.nodistractionphone.utils.parseStringToArray
 import com.pumar.nodistractionphone.utils.phoneUsageTime
 import com.pumar.nodistractionphone.utils.todayMillis
+import kotlin.math.absoluteValue
 
 
 class MainActivity : ComponentActivity() {
@@ -55,7 +59,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-
         updatePhoneUsageTime()
         updateAppsList()
     }
@@ -96,7 +99,7 @@ fun SwipeableScreens(
 
     val context = LocalContext.current
 
-    val pagerState = rememberPagerState(
+    val pagerState = PagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f
     ) // Number of screens

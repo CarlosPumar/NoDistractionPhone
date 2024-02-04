@@ -87,7 +87,6 @@ fun AppDialog(appName: String, packageName: String, handleClose: () -> Unit, uni
             modifier = Modifier
                 .width(200.dp)
                 .height(100.dp)
-                .background(Color.Blue)
         ) {
             Column() {
                 Text(text = appName)

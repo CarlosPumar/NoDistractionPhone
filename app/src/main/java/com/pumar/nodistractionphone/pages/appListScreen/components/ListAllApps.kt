@@ -46,15 +46,17 @@ fun ListAllApps(appList: List<IApp>, fetchApps: () -> Unit) {
         AppDialog(appToShow.value, packageNameToShow.value, hideModal, fetchApps)
     }
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .fillMaxWidth()
                 .padding(25.dp, 50.dp, 0.dp, 0.dp)
-                .verticalScroll(rememberScrollState())
             ,
         ) {
-            appList.forEach { it ->
+            items(appList.size) { index ->
+
+                val it = appList[index]
+
                 App(
                     it.packageName,
                     it.name,

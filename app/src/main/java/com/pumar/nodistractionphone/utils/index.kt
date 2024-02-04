@@ -41,25 +41,47 @@ fun isAppLaunchable(context: Context, packageName: String): Boolean {
 }
 
 fun getAllInstalledApps(context: Context): List<IApp> {
-    val installedApps: List<ApplicationInfo> = context.packageManager.getInstalledApplications(0)
-    val installedUserApp = installedApps.filter { isAppLaunchable(context, it.packageName) }
-    return installedUserApp.map {
-        IApp(getNameFromPackageName(context, it.packageName), it.packageName, appUsageTime(context, it.packageName))
+    val packageManager = context.packageManager
+
+    val installedApps = packageManager.getInstalledApplications(0)
+
+    val listAllApps = mutableListOf<IApp>()
+
+    installedApps.forEach {
+
+        if (isAppLaunchable(context, it.packageName)) {
+
+            val newApp = IApp(
+                getNameFromPackageName(context, it.packageName),
+                it.packageName,
+                appUsageTime(context, it.packageName)
+            )
+
+            listAllApps.add(newApp)
+        }
     }
+
+    return listAllApps
 }
 
 fun phoneUsageTime(context: Context): Long {
-    val installedApps = getAllInstalledApps(context)
 
-    var temp = 0L
+    val packageManager = context.packageManager
+    val installedApps = packageManager.getInstalledApplications(0)
+    var usageTime = 0L
+
     installedApps.forEach {
-        temp += it.usageTime
+        if (isAppLaunchable(context, it.packageName)) {
+            usageTime += appUsageTime(context, it.packageName)
+        }
     }
 
-    return temp
+    return usageTime
 }
 
 fun appUsageTime(context: Context, packageName: String): Int {
+
+    // return 0
 
     val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
