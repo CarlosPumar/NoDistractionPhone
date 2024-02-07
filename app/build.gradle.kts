@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.pumar.nodistractionphone"
+    namespace = "com.pumar.mobileless"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.pumar.nodistractionphone"
+        applicationId = "com.pumar.mobileless"
         minSdk = 26
         targetSdk = 33
         versionCode = 1
@@ -23,7 +23,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {

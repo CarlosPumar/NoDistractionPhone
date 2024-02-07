@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "No Distraction Phone"
+rootProject.name = "Mobile Less"
 include(":app")
