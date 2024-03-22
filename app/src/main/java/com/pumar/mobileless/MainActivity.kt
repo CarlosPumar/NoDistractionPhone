@@ -1,8 +1,11 @@
 package com.pumar.mobileless
 
+import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,86 +23,73 @@ import com.pumar.mobileless.pages.homeScreen.HomeScreen
 import com.pumar.mobileless.ui.theme.NoDistractionPhoneTheme
 import com.pumar.mobileless.utils.getAllInstalledApps
 import com.pumar.mobileless.utils.parseStringToArray
+import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pumar.mobileless.ui.components.DisclaimerDialog
+import com.pumar.mobileless.utils.checkUsageStatsPermission
+import com.pumar.mobileless.utils.handleUsageStatsPermission
+import com.pumar.mobileless.viewModels.AppListViewModel
+import com.pumar.mobileless.viewModels.FilterViewModel
 
 class MainActivity : ComponentActivity() {
 
-    private var allAppsList = mutableStateOf(emptyList<IApp>())
-    private var favAppsList = mutableStateOf(emptyList<IApp>())
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        val appListViewModel: AppListViewModel by viewModels()
         super.onCreate(savedInstanceState)
-        updateAppsList()
+        appListViewModel.updateAppsList(this)
 
         setContent {
             NoDistractionPhoneTheme {
                 // A surface container using the 'background' color from the theme
-                SwipeableScreens(allAppsList.value, favAppsList.value) { updateFavList() }
+                SwipeableScreens()
             }
         }
     }
 
     override fun onResume() {
+        val appListViewModel: AppListViewModel by viewModels()
+        val filterViewModel: FilterViewModel by viewModels()
+        appListViewModel.allAppList.value.forEach {
+            Log.d(TAG, it.name)
+            Log.d(TAG, it.isFavorite.toString())
+        }
         super.onResume()
-        updateAppsList()
+        appListViewModel.updateAppsList(this)
+        filterViewModel.onChanche("")
     }
 
-    private fun updateAppsList() {
-        val installedApps = getAllInstalledApps(this).sortedBy { it.name }
-        allAppsList.value = installedApps
-
-        val sharedPreferences = this.getSharedPreferences("favApps", Context.MODE_PRIVATE)
-        val favAppListPlain = sharedPreferences.getString("list", "")
-        val appList =
-            if (favAppListPlain != null) parseStringToArray(favAppListPlain).toList() else emptyList()
-
-        favAppsList.value = installedApps.filter { appList.contains(it.packageName) }
-    }
-
-    private fun updateFavList() {
-        val sharedPreferences = this.getSharedPreferences("favApps", Context.MODE_PRIVATE)
-        val favAppListPlain = sharedPreferences.getString("list", "")
-        val appList =
-            if (favAppListPlain != null) parseStringToArray(favAppListPlain).toList() else emptyList()
-
-        favAppsList.value = allAppsList.value.filter { appList.contains(it.packageName) }
-    }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipeableScreens(
-    allAppsList: List<IApp>,
-    favAppsList: List<IApp>,
-    updateAppList: () -> Unit,
-) {
-
-    var phoneUsageTime = 0L
-    allAppsList.forEach { app -> phoneUsageTime += app.usageTime }
+fun SwipeableScreens() {
 
     val context = LocalContext.current
+    var appListViewModel: AppListViewModel = viewModel()
+
+    var phoneUsageTime = 0L
+    appListViewModel.allAppList.value.forEach { app -> phoneUsageTime += app.usageTime }
 
     val pagerState = rememberPagerState()
 
-    val sharedPrefs = remember { context.getSharedPreferences("favApps", Context.MODE_PRIVATE) }
+    var hasPermissions by remember { mutableStateOf(true) }
 
-    DisposableEffect(sharedPrefs) {
-        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == "list") {
-                updateAppList()
-            }
-        }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
-        updateAppList()
-        onDispose {
-            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
-        }
+    LaunchedEffect(context) {
+        hasPermissions = checkUsageStatsPermission(context)
     }
 
     HorizontalPager(pageCount = 2, state = pagerState) { page ->
         when (page) {
-            0 -> HomeScreen(phoneUsageTime, favAppsList)
-            1 -> AppListScreen(allAppsList, updateAppList)
+            0 -> HomeScreen(phoneUsageTime)
+            1 -> AppListScreen()
         }
+    }
+    if (!hasPermissions) {
+        DisclaimerDialog { hasPermissions = false }
     }
 }
 
@@ -108,6 +98,6 @@ fun SwipeableScreens(
 fun Preview() {
 
     NoDistractionPhoneTheme {
-        SwipeableScreens(emptyList(), emptyList(), {})
+        SwipeableScreens()
     }
 }

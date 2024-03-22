@@ -18,7 +18,6 @@ import com.pumar.mobileless.ui.theme.NoDistractionPhoneTheme
 @Composable
 fun HomeScreen(
     phoneUsageTime: Long,
-    favAppsList: List<IApp>,
     modifier: Modifier = Modifier
 ) {
 
@@ -37,7 +36,7 @@ fun HomeScreen(
 
                 Clock()
                 UsageTime(phoneUsageTime)
-                ListApps(favAppsList)
+                ListApps()
             }
             Footer()
         }
@@ -49,6 +48,6 @@ fun HomeScreen(
 fun HomeScreenPreview() {
 
     NoDistractionPhoneTheme {
-        HomeScreen(0, emptyList())
+        HomeScreen(0)
     }
 }

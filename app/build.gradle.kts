@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.pumar.mobileless"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.pumar.mobileless"
@@ -63,7 +63,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.compose.foundation:foundation:1.4.0")
 
     testImplementation("junit:junit:4.13.2")

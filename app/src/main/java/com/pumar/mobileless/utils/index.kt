@@ -17,7 +17,7 @@ fun launchApp(context: Context, packageName: String) {
         context.startActivity(it)
     } ?: run {
         // If the launchIntent is null, the app is not installed
-        Toast.makeText(context, "App is not installed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Aplicación no instalada", Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -37,11 +37,16 @@ fun isAppLaunchable(context: Context, packageName: String): Boolean {
 fun getAllInstalledApps(context: Context): List<IApp> {
     val packageManager = context.packageManager
 
+    // get installed apps
     val installedApps = packageManager.getInstalledApplications(0)
-
     val listAllApps = mutableListOf<IApp>()
-
     val eventsList = getUsageEvents(context)
+
+    // get fav apps
+    val sharedPreferences = context.getSharedPreferences("favApps", Context.MODE_PRIVATE)
+    val favAppListPlain = sharedPreferences.getString("list", "")
+    val favAppPackagenameList =
+        if (favAppListPlain != null) parseStringToArray(favAppListPlain).toList() else emptyList()
 
     installedApps.forEach {
 
@@ -50,7 +55,9 @@ fun getAllInstalledApps(context: Context): List<IApp> {
             val newApp = IApp(
                 getNameFromPackageName(context, it.packageName),
                 it.packageName,
-                appUsageTime(eventsList, it.packageName)
+                appUsageTime(eventsList, it.packageName),
+                favAppPackagenameList.contains(it.packageName),
+                isAppBlocked(context, it.packageName)
             )
 
             listAllApps.add(newApp)
