@@ -23,6 +23,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,15 +38,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pumar.mobileless.R
 import com.pumar.mobileless.entities.IApp
 import com.pumar.mobileless.utils.isAppBlocked
 import com.pumar.mobileless.utils.isFavApp
+import com.pumar.mobileless.utils.isFocusedApp
 import com.pumar.mobileless.utils.lengthFavAppList
+import com.pumar.mobileless.utils.lengthFocusedAppList
 import com.pumar.mobileless.viewModels.AppListViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -97,81 +104,107 @@ fun AppDialog(
         appListViewModel.addAppToFav(context, packageName)
     }
 
-    var boxHeight = if (app.isBlocked) {
-        200.dp
-    } else {
-        275.dp
+    fun clickAppToFocus(context: Context, packageName: String) {
+
+        if (isFocusedApp(context, packageName)) {
+            appListViewModel.removeAppFromFocused(context, packageName)
+            return
+        }
+
+        if (lengthFocusedAppList(context) == 5) return
+
+        appListViewModel.addAppToFocused(context, packageName)
     }
 
-    Dialog(onDismissRequest = { handleClose() }) {
-        Box(
-            modifier = Modifier
-                .width(300.dp)
-                .height(boxHeight)
-                .background(color = Color.Black)
-                .border(
-                    width = 2.dp,
-                    color = Color.White,
-                    shape = RoundedCornerShape(8.dp) // Adjust the radius as needed
-                )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = app.name,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp) // Adjust the bottom padding as needed
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Favorita ", fontSize = 18.sp, modifier = Modifier.clickable {
-                        clickAppToFav(context, app.packageName)
-                    })
+    var boxHeight = if (app.isBlocked) {
+        225.dp
+    } else {
+        300.dp
+    }
 
-                    IconButton(onClick = {
-                        clickAppToFav(context, app.packageName)
-                    }) {
-                        if (app.isFavorite) {
-                            Icon(Icons.Filled.Favorite, "Favorite")
-                        } else {
-                            Icon(Icons.Filled.FavoriteBorder, "No favorite")
-                        }
+    Modal(onDismissRequest = { handleClose() }, height = boxHeight) {
+
+        Text(
+                text = app.name,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp) // Adjust the bottom padding as needed
+        )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(24.dp)
+            ) {
+                Text(text = "Favorita ", fontSize = 18.sp, modifier = Modifier.clickable {
+                    clickAppToFav(context, app.packageName)
+                })
+
+                IconButton(onClick = {
+                    clickAppToFav(context, app.packageName)
+                }) {
+                    if (app.isFavorite) {
+                        Icon(Icons.Filled.Favorite, "Favorite", )
+                    } else {
+                        Icon(Icons.Filled.FavoriteBorder, "No favorite")
                     }
                 }
-                Text(text = "Desinstalar", fontSize = 18.sp, modifier = Modifier
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Focus ", fontSize = 18.sp, modifier = Modifier.clickable {
+                    clickAppToFocus(context, app.packageName)
+                })
+
+                IconButton(onClick = {
+                    clickAppToFocus(context, app.packageName)
+                }) {
+                    if (app.isNeededInFocus) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.circle_filled),
+                            contentDescription = "Camera"
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.circle_not_filled),
+                            contentDescription = "Camera"
+                        )
+                    }
+                }
+            }
+            Text(text = "Desinstalar", fontSize = 18.sp, modifier = Modifier
+                .padding(bottom = 12.dp)
+                .clickable {
+                    uninstallApp()
+                })
+
+            if (app.isBlocked) {
+                Text(text = "Está bloqueada", fontSize = 18.sp)
+            } else {
+
+                Text(text = "Bloquear 30m", fontSize = 18.sp, modifier = Modifier
                     .padding(bottom = 12.dp)
                     .clickable {
-                        uninstallApp()
+                        appListViewModel.blockApp(context, 1000 * 60 * 30, app.packageName)
                     })
 
-                if (app.isBlocked) {
-                    Text(text = "Está bloqueada", fontSize = 18.sp)
-                } else {
+                Text(text = "Bloquear 1h", fontSize = 18.sp, modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .clickable {
+                        appListViewModel.blockApp(context, 1000 * 60 * 60, app.packageName)
+                    })
 
-                    Text(text = "Bloquear 30m", fontSize = 18.sp, modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .clickable {
-                            appListViewModel.blockApp(context, 1000 * 60 * 30, app.packageName)
-                        })
-
-                    Text(text = "Bloquear 1h", fontSize = 18.sp, modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .clickable {
-                            appListViewModel.blockApp(context, 1000 * 60 * 60, app.packageName)
-                        })
-
-                    Text(text = "Bloquear 2h", fontSize = 18.sp, modifier = Modifier
-                        .clickable {
-                            appListViewModel.blockApp(context, 1000 * 60 * 60 * 2, app.packageName)
-                        })
-                }
+                Text(text = "Bloquear 2h", fontSize = 18.sp, modifier = Modifier
+                    .clickable {
+                        appListViewModel.blockApp(context, 1000 * 60 * 60 * 2, app.packageName)
+                    })
             }
         }
     }
-}
+
+
+
+
+
 
 @Composable
 fun rememberLauncherForUninstall(

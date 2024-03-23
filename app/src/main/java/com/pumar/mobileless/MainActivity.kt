@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -25,6 +28,7 @@ import com.pumar.mobileless.utils.getAllInstalledApps
 import com.pumar.mobileless.utils.parseStringToArray
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,13 +37,17 @@ import com.pumar.mobileless.utils.checkUsageStatsPermission
 import com.pumar.mobileless.utils.handleUsageStatsPermission
 import com.pumar.mobileless.viewModels.AppListViewModel
 import com.pumar.mobileless.viewModels.FilterViewModel
+import com.pumar.mobileless.viewModels.FocusedModeViewModel
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val appListViewModel: AppListViewModel by viewModels()
+        val focusedModeViewModel: FocusedModeViewModel by viewModels()
+
         super.onCreate(savedInstanceState)
         appListViewModel.updateAppsList(this)
+        focusedModeViewModel.refreshFocusedMode(this)
 
         setContent {
             NoDistractionPhoneTheme {
@@ -52,13 +60,12 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         val appListViewModel: AppListViewModel by viewModels()
         val filterViewModel: FilterViewModel by viewModels()
-        appListViewModel.allAppList.value.forEach {
-            Log.d(TAG, it.name)
-            Log.d(TAG, it.isFavorite.toString())
-        }
+        val focusedModeViewModel: FocusedModeViewModel by viewModels()
+
         super.onResume()
         appListViewModel.updateAppsList(this)
-        filterViewModel.onChanche("")
+        filterViewModel.onChange("")
+        focusedModeViewModel.refreshFocusedMode(this)
     }
 
 }
@@ -70,9 +77,13 @@ fun SwipeableScreens() {
 
     val context = LocalContext.current
     var appListViewModel: AppListViewModel = viewModel()
+    val appList = appListViewModel.allAppList.collectAsState()
+
+    var focusedModeViewModel: FocusedModeViewModel = viewModel()
+    val focusedMode = focusedModeViewModel.focusedModeValue.collectAsState()
 
     var phoneUsageTime = 0L
-    appListViewModel.allAppList.value.forEach { app -> phoneUsageTime += app.usageTime }
+    appList.value.forEach { app -> phoneUsageTime += app.usageTime }
 
     val pagerState = rememberPagerState()
 
@@ -82,12 +93,17 @@ fun SwipeableScreens() {
         hasPermissions = checkUsageStatsPermission(context)
     }
 
-    HorizontalPager(pageCount = 2, state = pagerState) { page ->
-        when (page) {
-            0 -> HomeScreen(phoneUsageTime)
-            1 -> AppListScreen()
+    if (focusedMode.value) {
+        HomeScreen(phoneUsageTime)
+    } else {
+        HorizontalPager(pageCount = 2, state = pagerState) { page ->
+            when (page) {
+                0 -> HomeScreen(phoneUsageTime)
+                1 -> AppListScreen()
+            }
         }
     }
+
     if (!hasPermissions) {
         DisclaimerDialog { hasPermissions = false }
     }

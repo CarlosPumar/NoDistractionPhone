@@ -27,46 +27,32 @@ fun DisclaimerDialog(
 ) {
     val context = LocalContext.current
 
-    Dialog(onDismissRequest = { handleClose() }) {
-        Box(
-            modifier = Modifier
-                .width(300.dp)
-                .height(325.dp)
-                .background(color = Color.Black)
-                .border(
-                    width = 2.dp,
-                    color = Color.White,
-                    shape = RoundedCornerShape(8.dp) // Adjust the radius as needed
-                )
-        ){
-            Column (modifier = Modifier.padding(12.dp)) {
-                Row (modifier = Modifier.padding(bottom = 12.dp)) {
-                    Text(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        text = "Danos permisos",
-                        color = Color.White
-                    )
+    Modal(onDismissRequest = { handleClose() }, height = 325.dp) {
+        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+            Text(
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                text = "Danos permisos",
+                color = Color.White
+            )
+        }
+        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+            Text(text = "Clica en \"Dar permisos\", para poder calcular el tiempo que pasas en cada aplicación ", color = Color.White)
+        }
+        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+            Text(text = "¡Tus datos no salen de tú teléfono!", color = Color.White)
+        }
+        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+            Text(text = "Únicamente usamos tus datos para mostrártelos, no tratamos tus datos de ninguna otra manera", color = Color.White)
+        }
+        Row {
+            Text(text = "Dar permisos", fontSize = 18.sp, color = Color.White, modifier = Modifier
+                .padding(12.dp)
+                .clickable {
+                    handleUsageStatsPermission(context)
+                    handleClose()
                 }
-                Row (modifier = Modifier.padding(bottom = 12.dp)) {
-                    Text(text = "Clicka en \"Dar permisos\", para poder calcular el tiempo que pasas en cada aplicación ", color = Color.White)
-                }
-                Row (modifier = Modifier.padding(bottom = 12.dp)) {
-                    Text(text = "¡Tus datos no salen de tú teléfono!", color = Color.White)
-                }
-                Row (modifier = Modifier.padding(bottom = 12.dp)) {
-                    Text(text = "Únicamente usamos tus datos para mostrártelos, no tratamos tus datos de ninguna otra manera", color = Color.White)
-                }
-                Row {
-                    Text(text = "Dar permisos", fontSize = 18.sp, color = Color.White, modifier = Modifier
-                        .padding(12.dp)
-                        .clickable {
-                            handleUsageStatsPermission(context)
-                            handleClose()
-                        })
-                }
-            }
-
+            )
         }
     }
 }

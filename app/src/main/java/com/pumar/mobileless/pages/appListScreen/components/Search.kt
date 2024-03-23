@@ -42,7 +42,7 @@ fun Search() {
             TextField(
                 value = filterValue.value,
                 onValueChange = {
-                    viewModel.onChanche(it)
+                    viewModel.onChange(it)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

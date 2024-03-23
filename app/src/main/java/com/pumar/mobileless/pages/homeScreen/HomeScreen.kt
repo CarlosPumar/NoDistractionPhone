@@ -1,12 +1,18 @@
 package com.pumar.mobileless.pages.homeScreen
 
+import android.content.Context
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pumar.mobileless.entities.IApp
 import com.pumar.mobileless.pages.homeScreen.components.Clock
 import com.pumar.mobileless.pages.homeScreen.components.Footer
@@ -14,12 +20,32 @@ import com.pumar.mobileless.pages.homeScreen.components.Header
 import com.pumar.mobileless.pages.homeScreen.components.ListApps
 import com.pumar.mobileless.pages.homeScreen.components.UsageTime
 import com.pumar.mobileless.ui.theme.NoDistractionPhoneTheme
+import com.pumar.mobileless.utils.isFocusedModeOn
+import com.pumar.mobileless.viewModels.AppListViewModel
+import com.pumar.mobileless.viewModels.FilterViewModel
+import com.pumar.mobileless.viewModels.FocusedModeViewModel
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Composable
 fun HomeScreen(
     phoneUsageTime: Long,
     modifier: Modifier = Modifier
 ) {
+
+    val context: Context = LocalContext.current
+
+    var appListViewModel: AppListViewModel = viewModel()
+    val appList by appListViewModel.allAppList.collectAsState()
+
+    var focusedModeViewModel: FocusedModeViewModel = viewModel()
+    val focusedMode = focusedModeViewModel.focusedModeValue.collectAsState()
+
+    val appListToShow = if (focusedMode.value) {
+        appList.filter { it.isNeededInFocus }
+    } else {
+        appList.filter { it.isFavorite }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -36,7 +62,7 @@ fun HomeScreen(
 
                 Clock()
                 UsageTime(phoneUsageTime)
-                ListApps()
+                ListApps(appListToShow)
             }
             Footer()
         }

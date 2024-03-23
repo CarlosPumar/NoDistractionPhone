@@ -12,7 +12,7 @@ class FilterViewModel: ViewModel() {
     private val _filterValue = MutableStateFlow("")
     val filterValue: StateFlow<String> = _filterValue.asStateFlow()
 
-    fun onChanche(newFilteredValue: String) {
+    fun onChange(newFilteredValue: String) {
         _filterValue.update { newFilteredValue }
     }
 }

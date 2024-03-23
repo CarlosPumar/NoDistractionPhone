@@ -90,6 +90,52 @@ class AppListViewModel: ViewModel() {
         }
     }
 
+    fun addAppToFocused(context: Context, packageName: String) {
+        val sharedPrefs = context.getSharedPreferences("focusedApps", Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+
+        // Accessing stored data
+        var storedValue = sharedPrefs.getString("list", "") ?: ""
+
+        val appList = parseStringToArray(storedValue)
+        val appMutableList = appList.toMutableList()
+
+        appMutableList.add(packageName)
+        editor.putString("list", stringifyArray(appMutableList.toTypedArray()))
+        editor.apply()
+
+        _allAppList.update { current -> current.map {
+                val copiedApp = it.copy()
+                if (it.packageName == packageName) copiedApp.isNeededInFocus = true
+                copiedApp
+            }
+        }
+    }
+
+    fun removeAppFromFocused(context: Context, packageName: String) {
+        val sharedPrefs = context.getSharedPreferences("focusedApps", Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+
+        // Accessing stored data
+        var storedValue = sharedPrefs.getString("list", "") ?: ""
+
+        val appList = parseStringToArray(storedValue)
+        val appMutableList = appList.toMutableList()
+
+        if (appList.contains(packageName)) {
+            appMutableList.remove(packageName)
+            editor.putString("list", stringifyArray(appMutableList.toTypedArray()))
+            editor.apply()
+        }
+
+        _allAppList.update { current -> current.map {
+                val copiedApp = it.copy()
+                if (it.packageName == packageName) copiedApp.isNeededInFocus = false
+                copiedApp
+            }
+        }
+    }
+
     fun removeApp(context: Context, packageName: String) {
         _allAppList.update { currentState ->
 

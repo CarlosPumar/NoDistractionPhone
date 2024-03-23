@@ -2,9 +2,11 @@ package com.pumar.mobileless.utils
 
 import android.app.usage.UsageEvents.Event
 import android.app.usage.UsageStatsManager
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import com.pumar.mobileless.entities.IApp
 
@@ -45,8 +47,14 @@ fun getAllInstalledApps(context: Context): List<IApp> {
     // get fav apps
     val sharedPreferences = context.getSharedPreferences("favApps", Context.MODE_PRIVATE)
     val favAppListPlain = sharedPreferences.getString("list", "")
-    val favAppPackagenameList =
+    val favAppPackageNameList =
         if (favAppListPlain != null) parseStringToArray(favAppListPlain).toList() else emptyList()
+
+    // get focused apps
+    val sharedPreferencesFocused = context.getSharedPreferences("focusedApps", Context.MODE_PRIVATE)
+    val focusedAppListPlain = sharedPreferencesFocused.getString("list", "")
+    val focusedAppPackageNameList =
+        if (focusedAppListPlain != null) parseStringToArray(focusedAppListPlain).toList() else emptyList()
 
     installedApps.forEach {
 
@@ -56,8 +64,9 @@ fun getAllInstalledApps(context: Context): List<IApp> {
                 getNameFromPackageName(context, it.packageName),
                 it.packageName,
                 appUsageTime(eventsList, it.packageName),
-                favAppPackagenameList.contains(it.packageName),
-                isAppBlocked(context, it.packageName)
+                favAppPackageNameList.contains(it.packageName),
+                isAppBlocked(context, it.packageName),
+                focusedAppPackageNameList.contains(it.packageName)
             )
 
             listAllApps.add(newApp)
@@ -119,6 +128,15 @@ fun isAppBlocked(context: Context, packageName: String): Boolean {
 
     // Accessing stored data
     var storedValue = sharedPreferences.getString(packageName, "0") ?: "0"
+
+    return storedValue.toLong() > System.currentTimeMillis()
+}
+
+fun isFocusedModeOn(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("focusedTime", Context.MODE_PRIVATE)
+
+    // Accessing stored data
+    var storedValue = sharedPreferences.getString("time", "0") ?: "0"
 
     return storedValue.toLong() > System.currentTimeMillis()
 }

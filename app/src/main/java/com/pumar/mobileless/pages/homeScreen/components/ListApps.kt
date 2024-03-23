@@ -28,13 +28,7 @@ import com.pumar.mobileless.viewModels.AppListViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun ListApps() {
-    val context: Context = LocalContext.current
-
-    var appListViewModel: AppListViewModel = viewModel()
-    val appList by appListViewModel.allAppList.collectAsState()
-    val favAppsList = appList.filter { it.isFavorite }
-
+fun ListApps(listApp: List<IApp>) {
     val appToShow = remember { mutableStateOf<String?>(null) }
 
     var handleShowDialog = { packageName: String ->
@@ -48,20 +42,14 @@ fun ListApps() {
         AppDialog(appToShow.value!!, hideModal, {})
     }
 
-    if (favAppsList != null) LazyColumn(
+    if (listApp != null) LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(25.dp, 50.dp, 0.dp, 0.dp),
     ) {
-        items(favAppsList.size) { index ->
-            val it = favAppsList[index]
+        items(listApp.size) { index ->
+            val it = listApp[index]
             App(it, handleShowDialog(it.packageName))
         }
     }
-}
-
-@Preview
-@Composable
-fun ListAppsPreview() {
-    ListApps()
 }
