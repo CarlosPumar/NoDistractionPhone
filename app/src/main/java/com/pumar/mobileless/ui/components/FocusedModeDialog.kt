@@ -2,6 +2,7 @@ package com.pumar.mobileless.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -11,10 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pumar.mobileless.R
 import com.pumar.mobileless.viewModels.AppListViewModel
 import com.pumar.mobileless.viewModels.FocusedModeViewModel
 
@@ -22,6 +25,10 @@ import com.pumar.mobileless.viewModels.FocusedModeViewModel
 fun FocusedModeDialog(handleClose: () -> Unit) {
 
     var focusedModeViewModel: FocusedModeViewModel = viewModel()
+    var appListViewModel: AppListViewModel = viewModel()
+    val appList by appListViewModel.allAppList.collectAsState()
+    var focusedAppList = appList.filter { it.isNeededInFocus }
+
     val context: Context = LocalContext.current
 
     Modal(onDismissRequest = { handleClose() }, height = 450.dp) {
@@ -29,30 +36,42 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
             Text(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                text = "Activar modo Focus",
+                text = stringResource(R.string.modo_focus_on),
                 color = Color.White
             )
         }
         Row (modifier = Modifier.padding(bottom = 18.dp)) {
-            Text(text = "En este modo únicamente podrás usar las apps previamente configuradas como \"Focus\".")
+            Text(text = stringResource(R.string.modo_focus_explanation))
         }
         Row (modifier = Modifier.padding(bottom = 18.dp)) {
-            Text(text = "Para esta función, te recomendamos apps como: Navegador Web, Aplicación bancaria y Aplicación de mensajería")
+            Text(text = stringResource(R.string.modo_focused_selected_apps))
         }
 
-        Text(text = "Activar por 30m", fontSize = 18.sp, modifier = Modifier
+        Row (modifier = Modifier.padding(bottom = 18.dp)) {
+            if (focusedAppList.isEmpty()) {
+                Text(text = stringResource(R.string.no_focused_apps))
+            }
+
+            Column {
+                focusedAppList.forEach {
+                    Text(text = it.name)
+                }
+            }
+        }
+
+        Text(text = stringResource(R.string.on_per_30m), fontSize = 18.sp, modifier = Modifier
             .padding(bottom = 12.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 30)
             })
 
-        Text(text = "Activar por 1h", fontSize = 18.sp, modifier = Modifier
+        Text(text = stringResource(R.string.on_per_1h), fontSize = 18.sp, modifier = Modifier
             .padding(bottom = 12.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60)
             })
 
-        Text(text = "Activar por 2h", fontSize = 18.sp, modifier = Modifier
+        Text(text = stringResource(R.string.on_per_2h), fontSize = 18.sp, modifier = Modifier
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60 * 2)
             })

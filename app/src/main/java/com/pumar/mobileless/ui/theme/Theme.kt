@@ -71,7 +71,6 @@ fun NoDistractionPhoneTheme(
         else -> LightColorScheme
     }
 
-    val context = LocalContext.current
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

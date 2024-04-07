@@ -31,7 +31,7 @@ fun formatMillisToHoursMinutes(millis: Long): String {
     val hours = TimeUnit.MILLISECONDS.toHours(millis)
     val minutes = TimeUnit.MILLISECONDS.toMinutes(millis - TimeUnit.HOURS.toMillis(hours))
 
-    return String.format(Locale.getDefault(), "%02d:%02d", hours, minutes)
+    return String.format(Locale.getDefault(), "%02dh %02dm", hours, minutes)
 }
 
 fun todayMillis(): Long {

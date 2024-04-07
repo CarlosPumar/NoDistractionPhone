@@ -15,10 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.pumar.mobileless.R
 import com.pumar.mobileless.utils.handleUsageStatsPermission
 
 @Composable
@@ -32,21 +34,21 @@ fun DisclaimerDialog(
             Text(
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                text = "Danos permisos",
+                text = stringResource(R.string.give_permissions),
                 color = Color.White
             )
         }
         Row (modifier = Modifier.padding(bottom = 12.dp)) {
-            Text(text = "Clica en \"Dar permisos\", para poder calcular el tiempo que pasas en cada aplicación ", color = Color.White)
+            Text(text = stringResource(R.string.permission_explanation_1), color = Color.White)
         }
         Row (modifier = Modifier.padding(bottom = 12.dp)) {
-            Text(text = "¡Tus datos no salen de tú teléfono!", color = Color.White)
+            Text(text = stringResource(R.string.permission_explanation_2), color = Color.White)
         }
         Row (modifier = Modifier.padding(bottom = 12.dp)) {
-            Text(text = "Únicamente usamos tus datos para mostrártelos, no tratamos tus datos de ninguna otra manera", color = Color.White)
+            Text(text = stringResource(R.string.permission_explanation_3), color = Color.White)
         }
         Row {
-            Text(text = "Dar permisos", fontSize = 18.sp, color = Color.White, modifier = Modifier
+            Text(text = stringResource(R.string.give_permissions), fontSize = 18.sp, color = Color.White, modifier = Modifier
                 .padding(12.dp)
                 .clickable {
                     handleUsageStatsPermission(context)

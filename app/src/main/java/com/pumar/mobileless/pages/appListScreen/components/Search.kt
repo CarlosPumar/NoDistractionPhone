@@ -19,10 +19,12 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.pumar.mobileless.viewModels.FilterViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pumar.mobileless.R
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -48,7 +50,7 @@ fun Search() {
                     .fillMaxWidth()
                     .background(color = Color.Black, shape = RoundedCornerShape(8.dp))
                     .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(8.dp)),
-                label = { Text("Filtrar", color = Color.White) },
+                label = { Text(stringResource(R.string.filter), color = Color.White) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),

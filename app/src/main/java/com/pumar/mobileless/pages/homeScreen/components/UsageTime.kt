@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pumar.mobileless.R
 import com.pumar.mobileless.utils.formatMillisToHoursMinutes
 
 @Composable
@@ -23,7 +25,7 @@ fun UsageTime(phoneUsageTime: Long) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Tiempo de uso " + formatMillisToHoursMinutes(phoneUsageTime))
+            Text(text = stringResource(R.string.usage_time) + " " + formatMillisToHoursMinutes(phoneUsageTime))
         }
     }
 }

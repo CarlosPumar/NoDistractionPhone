@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -134,7 +135,7 @@ fun AppDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.height(24.dp)
             ) {
-                Text(text = "Favorita ", fontSize = 18.sp, modifier = Modifier.clickable {
+                Text(text = stringResource(R.string.favorite), fontSize = 18.sp, modifier = Modifier.clickable {
                     clickAppToFav(context, app.packageName)
                 })
 
@@ -151,7 +152,7 @@ fun AppDialog(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Focus ", fontSize = 18.sp, modifier = Modifier.clickable {
+                Text(text = stringResource(R.string.focus), fontSize = 18.sp, modifier = Modifier.clickable {
                     clickAppToFocus(context, app.packageName)
                 })
 
@@ -171,29 +172,29 @@ fun AppDialog(
                     }
                 }
             }
-            Text(text = "Desinstalar", fontSize = 18.sp, modifier = Modifier
+            Text(text = stringResource(R.string.uninstall), fontSize = 18.sp, modifier = Modifier
                 .padding(bottom = 12.dp)
                 .clickable {
                     uninstallApp()
                 })
 
             if (app.isBlocked) {
-                Text(text = "Está bloqueada", fontSize = 18.sp)
+                Text(text = stringResource(R.string.is_blocked), fontSize = 18.sp)
             } else {
 
-                Text(text = "Bloquear 30m", fontSize = 18.sp, modifier = Modifier
+                Text(text = stringResource(R.string.block_30m), fontSize = 18.sp, modifier = Modifier
                     .padding(bottom = 12.dp)
                     .clickable {
                         appListViewModel.blockApp(context, 1000 * 60 * 30, app.packageName)
                     })
 
-                Text(text = "Bloquear 1h", fontSize = 18.sp, modifier = Modifier
+                Text(text = stringResource(R.string.block_1h), fontSize = 18.sp, modifier = Modifier
                     .padding(bottom = 12.dp)
                     .clickable {
                         appListViewModel.blockApp(context, 1000 * 60 * 60, app.packageName)
                     })
 
-                Text(text = "Bloquear 2h", fontSize = 18.sp, modifier = Modifier
+                Text(text = stringResource(R.string.block_2h), fontSize = 18.sp, modifier = Modifier
                     .clickable {
                         appListViewModel.blockApp(context, 1000 * 60 * 60 * 2, app.packageName)
                     })

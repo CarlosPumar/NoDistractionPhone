@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mobile Less</string>
+    <string name="modo_focus_on">Activer le mode Focus</string>
+    <string name="modo_focus_explanation">Dans ce mode, vous ne pouvez utiliser que les applications précédemment configurées comme "Focus".</string>
+    <string name="modo_focused_selected_apps">Applications sélectionnées comme "Focus"</string>
+    <string name="no_focused_apps">Vous n\'avez sélectionné aucune application comme "Focus"</string>
+    <string name="on_per_30m">Activer pendant 30 minutes</string>
+    <string name="on_per_1h">Activer pendant 1 heure</string>
+    <string name="on_per_2h">Activer pendant 2 heures</string>
+    <string name="give_permissions">Donnez-nous les autorisations</string>
+    <string name="permission_explanation_1">Cliquez sur "Donner les autorisations" pour calculer le temps passé sur chaque application</string>
+    <string name="permission_explanation_2">Vos données restent sur votre téléphone !</string>
+    <string name="permission_explanation_3">Nous utilisons uniquement vos données pour vous les montrer, nous ne traitons pas vos données d\'une autre manière</string>
+    <string name="filter">Filtrer</string>
+    <string name="favorite">Favori</string>
+    <string name="focus">Focus</string>
+    <string name="uninstall">Désinstaller</string>
+    <string name="is_blocked">Est bloquée</string>
+    <string name="block_30m">Bloquer pendant 30 minutes</string>
+    <string name="block_1h">Bloquer pendant 1 heure</string>
+    <string name="block_2h">Bloquer pendant 2 heures</string>
+    <string name="usage_time">Temps d\'utilisation</string>
+</resources>
