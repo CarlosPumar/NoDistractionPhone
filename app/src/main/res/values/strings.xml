@@ -21,4 +21,6 @@
     <string name="block_1h">Block for 1h</string>
     <string name="block_2h">Block for 2h</string>
     <string name="usage_time">Usage Time</string>
+    <string name="custom">Custom (Recommended)</string>
+    <string name="focus_on">Focus mode On</string>
 </resources>

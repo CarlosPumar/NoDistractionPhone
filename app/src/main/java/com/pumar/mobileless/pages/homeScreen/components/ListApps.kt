@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pumar.mobileless.entities.IApp
 import com.pumar.mobileless.ui.components.App
 import com.pumar.mobileless.ui.components.AppDialog
+import com.pumar.mobileless.ui.components.IntervalSelectorDialog
 import com.pumar.mobileless.viewModels.AppListViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")

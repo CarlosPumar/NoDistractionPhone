@@ -1,5 +1,6 @@
 package com.pumar.mobileless.utils
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
@@ -42,4 +43,20 @@ fun todayMillis(): Long {
         set(Calendar.MILLISECOND, 0)
     }
     return calendar.timeInMillis
+}
+
+fun parseStringToCalendar(stringTime: String): Calendar {
+    val calendar = Calendar.getInstance()
+    if (stringTime.isNotBlank()) {
+        val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val date = timeFormat.parse(stringTime)
+        calendar.time = date
+    }
+    return calendar
+}
+
+fun timestampToCalendar(timestamp: Long): Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timestamp
+    return calendar
 }

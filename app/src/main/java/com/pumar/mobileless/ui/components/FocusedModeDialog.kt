@@ -9,6 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +31,8 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
     var appListViewModel: AppListViewModel = viewModel()
     val appList by appListViewModel.allAppList.collectAsState()
     var focusedAppList = appList.filter { it.isNeededInFocus }
+
+    var isModalOpen by remember { mutableStateOf(false) }
 
     val context: Context = LocalContext.current
 
@@ -72,8 +77,19 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
             })
 
         Text(text = stringResource(R.string.on_per_2h), fontSize = 18.sp, modifier = Modifier
+            .padding(bottom = 12.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60 * 2)
             })
+
+        Text(text = stringResource(R.string.custom), fontSize = 18.sp, modifier = Modifier
+            .clickable {
+                isModalOpen = true
+            })
+
+        if (isModalOpen) {
+            IntervalSelectorDialog { isModalOpen = false; handleClose() }
+        }
+
     }
 }

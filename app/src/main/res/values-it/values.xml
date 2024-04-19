@@ -21,4 +21,6 @@
     <string name="block_1h">Blocca per 1 ora</string>
     <string name="block_2h">Blocca per 2 ore</string>
     <string name="usage_time">Tempo di utilizzo</string>
+    <string name="custom">Personalizzato</string>
+    <string name="focus_on">Modalità di messa a fuoco attiva</string>
 </resources>

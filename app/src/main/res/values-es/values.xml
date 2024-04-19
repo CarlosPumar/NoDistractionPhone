@@ -21,4 +21,6 @@
     <string name="block_1h">Bloquear 1h</string>
     <string name="block_2h">Bloquear 2h</string>
     <string name="usage_time">Tiempo de uso</string>
+    <string name="custom">Personalizado (Recomendado)</string>
+    <string name="focus_on">Modo focus activo</string>
 </resources>
