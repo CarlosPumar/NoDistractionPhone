@@ -54,8 +54,7 @@ fun App(app: IApp, showDialog: () -> Unit?) {
         Text(
             text = "${app.name} $usageTimeString",
             color = color,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             modifier = Modifier
                 .padding(0.dp, 7.5.dp)
                 .fillMaxWidth()

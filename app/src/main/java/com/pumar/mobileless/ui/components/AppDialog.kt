@@ -127,15 +127,15 @@ fun AppDialog(
 
         Text(
                 text = app.name,
-                fontSize = 18.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp) // Adjust the bottom padding as needed
+                modifier = Modifier.padding(bottom = 24.dp) // Adjust the bottom padding as needed
         )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.height(24.dp)
             ) {
-                Text(text = stringResource(R.string.favorite), fontSize = 18.sp, modifier = Modifier.clickable {
+                Text(text = stringResource(R.string.favorite), fontSize = 20.sp, modifier = Modifier.clickable {
                     clickAppToFav(context, app.packageName)
                 })
 
@@ -152,7 +152,7 @@ fun AppDialog(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = stringResource(R.string.focus), fontSize = 18.sp, modifier = Modifier.clickable {
+                Text(text = stringResource(R.string.focus), fontSize = 20.sp, modifier = Modifier.clickable {
                     clickAppToFocus(context, app.packageName)
                 })
 
@@ -172,29 +172,29 @@ fun AppDialog(
                     }
                 }
             }
-            Text(text = stringResource(R.string.uninstall), fontSize = 18.sp, modifier = Modifier
+            Text(text = stringResource(R.string.uninstall), fontSize = 20.sp, modifier = Modifier
                 .padding(bottom = 12.dp)
                 .clickable {
                     uninstallApp()
                 })
 
             if (app.isBlocked) {
-                Text(text = stringResource(R.string.is_blocked), fontSize = 18.sp)
+                Text(text = stringResource(R.string.is_blocked), fontSize = 20.sp)
             } else {
 
-                Text(text = stringResource(R.string.block_30m), fontSize = 18.sp, modifier = Modifier
+                Text(text = stringResource(R.string.block_30m), fontSize = 20.sp, modifier = Modifier
                     .padding(bottom = 12.dp)
                     .clickable {
                         appListViewModel.blockApp(context, 1000 * 60 * 30, app.packageName)
                     })
 
-                Text(text = stringResource(R.string.block_1h), fontSize = 18.sp, modifier = Modifier
+                Text(text = stringResource(R.string.block_1h), fontSize = 20.sp, modifier = Modifier
                     .padding(bottom = 12.dp)
                     .clickable {
                         appListViewModel.blockApp(context, 1000 * 60 * 60, app.packageName)
                     })
 
-                Text(text = stringResource(R.string.block_2h), fontSize = 18.sp, modifier = Modifier
+                Text(text = stringResource(R.string.block_2h), fontSize = 20.sp, modifier = Modifier
                     .clickable {
                         appListViewModel.blockApp(context, 1000 * 60 * 60 * 2, app.packageName)
                     })

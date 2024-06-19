@@ -105,7 +105,7 @@ fun SwipeableScreens() {
     }
 
     if (!hasPermissions) {
-        DisclaimerDialog { hasPermissions = false }
+        DisclaimerDialog { hasPermissions = true }
     }
 }
 

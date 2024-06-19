@@ -37,7 +37,7 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
     val context: Context = LocalContext.current
 
     Modal(onDismissRequest = { handleClose() }, height = 450.dp) {
-        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+        Row (modifier = Modifier.padding(bottom = 24.dp)) {
             Text(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
@@ -46,43 +46,43 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
             )
         }
         Row (modifier = Modifier.padding(bottom = 18.dp)) {
-            Text(text = stringResource(R.string.modo_focus_explanation))
+            Text(text = stringResource(R.string.modo_focus_explanation), fontSize = 18.sp)
         }
         Row (modifier = Modifier.padding(bottom = 18.dp)) {
-            Text(text = stringResource(R.string.modo_focused_selected_apps))
+            Text(text = stringResource(R.string.modo_focused_selected_apps), fontSize = 18.sp)
         }
 
-        Row (modifier = Modifier.padding(bottom = 18.dp)) {
+        Row (modifier = Modifier.padding(bottom = 20.dp)) {
             if (focusedAppList.isEmpty()) {
-                Text(text = stringResource(R.string.no_focused_apps))
+                Text(text = stringResource(R.string.no_focused_apps), fontSize = 18.sp)
             }
 
             Column {
                 focusedAppList.forEach {
-                    Text(text = it.name)
+                    Text(text = it.name, fontSize = 18.sp, fontWeight = FontWeight.Bold,)
                 }
             }
         }
 
-        Text(text = stringResource(R.string.on_per_30m), fontSize = 18.sp, modifier = Modifier
+        Text(text = stringResource(R.string.on_per_30m), fontSize = 20.sp, modifier = Modifier
             .padding(bottom = 12.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 30)
             })
 
-        Text(text = stringResource(R.string.on_per_1h), fontSize = 18.sp, modifier = Modifier
+        Text(text = stringResource(R.string.on_per_1h), fontSize = 20.sp, modifier = Modifier
             .padding(bottom = 12.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60)
             })
 
-        Text(text = stringResource(R.string.on_per_2h), fontSize = 18.sp, modifier = Modifier
+        Text(text = stringResource(R.string.on_per_2h), fontSize = 20.sp, modifier = Modifier
             .padding(bottom = 12.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60 * 2)
             })
 
-        Text(text = stringResource(R.string.custom), fontSize = 18.sp, modifier = Modifier
+        Text(text = stringResource(R.string.custom), fontSize = 20.sp, modifier = Modifier
             .clickable {
                 isModalOpen = true
             })

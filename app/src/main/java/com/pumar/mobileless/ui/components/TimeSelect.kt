@@ -38,12 +38,12 @@ fun TimeSelect(selectedTime: Calendar, text: String, onChange: (value: Calendar)
         TextField(
             value = formattedTime,
             onValueChange = { },
-            label = { Text(text, color = Color.White) },
+            label = { Text(text, color = Color.White, fontSize = 14.sp) },
             enabled = false,
             colors = TextFieldDefaults.textFieldColors(
                 textColor = Color.Transparent,
             ),
-            textStyle = TextStyle(color = Color.White),
+            textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {

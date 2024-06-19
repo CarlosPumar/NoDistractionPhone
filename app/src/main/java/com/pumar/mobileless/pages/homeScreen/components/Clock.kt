@@ -56,13 +56,13 @@ fun Clock() {
             Text(
                 text = currentTime.value,
                 fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
+                fontSize = 36.sp,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = currentDate.value,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                fontSize = 24.sp,
                 textAlign = TextAlign.Center
             )
         }

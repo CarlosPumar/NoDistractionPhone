@@ -2,6 +2,7 @@ package com.pumar.mobileless.pages.homeScreen.components
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material.icons.Icons
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pumar.mobileless.R
 import com.pumar.mobileless.pages.appListScreen.components.ListAllApps
@@ -39,7 +41,8 @@ fun FocusButton(modifier: Modifier = Modifier) {
     IconButton(onClick = onOpen) {
         Icon(
             painter = painterResource(id = R.drawable.circle_filled),
-            contentDescription = "Focused"
+            contentDescription = "Focused",
+            modifier = Modifier.size(20.dp) // Set the size you want here
         )
     }
 

@@ -30,7 +30,7 @@ fun DisclaimerDialog(
     val context = LocalContext.current
 
     Modal(onDismissRequest = { handleClose() }, height = 325.dp) {
-        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+        Row (modifier = Modifier.padding(bottom = 24.dp)) {
             Text(
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -38,17 +38,18 @@ fun DisclaimerDialog(
                 color = Color.White
             )
         }
-        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+        Row (modifier = Modifier.padding(bottom = 18.dp)) {
             Text(text = stringResource(R.string.permission_explanation_1), color = Color.White)
         }
-        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+        Row (modifier = Modifier.padding(bottom = 18.dp)) {
             Text(text = stringResource(R.string.permission_explanation_2), color = Color.White)
         }
-        Row (modifier = Modifier.padding(bottom = 12.dp)) {
+        Row (modifier = Modifier.padding(bottom = 18.dp)) {
             Text(text = stringResource(R.string.permission_explanation_3), color = Color.White)
         }
         Row {
-            Text(text = stringResource(R.string.give_permissions), fontSize = 18.sp, color = Color.White, modifier = Modifier
+            Text(text = stringResource(R.string.give_permissions), fontSize = 20.sp, color = Color.White, fontWeight = FontWeight.Bold,
+                modifier = Modifier
                 .padding(12.dp)
                 .clickable {
                     handleUsageStatsPermission(context)

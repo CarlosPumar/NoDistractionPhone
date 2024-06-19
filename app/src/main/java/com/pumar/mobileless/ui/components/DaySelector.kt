@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DaySelector(selectedDays: List<Int>, onDaysSelected: (MutableList<Int>) -> Unit) {
@@ -33,7 +34,7 @@ fun DaySelector(selectedDays: List<Int>, onDaysSelected: (MutableList<Int>) -> U
                     },
                     modifier = Modifier.padding(end = 8.dp)
                 )
-                Text(text = day)
+                Text(text = day, fontSize = 18.sp)
             }
         }
     }

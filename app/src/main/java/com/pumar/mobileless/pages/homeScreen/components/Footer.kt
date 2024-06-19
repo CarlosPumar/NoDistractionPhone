@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Call
@@ -16,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.pumar.mobileless.R
+import androidx.compose.foundation.layout.size
 
 @Composable
 fun Footer(modifier: Modifier = Modifier) {
@@ -30,7 +33,7 @@ fun Footer(modifier: Modifier = Modifier) {
     ) {}
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(onClick = {             // Launch the camera in photo mode
@@ -39,7 +42,8 @@ fun Footer(modifier: Modifier = Modifier) {
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.camera_fill),
-                contentDescription = "Camera"
+                contentDescription = "Camera",
+                modifier = Modifier.size(24.dp) // Set the size you want here
             )
         }
         IconButton(
@@ -54,7 +58,8 @@ fun Footer(modifier: Modifier = Modifier) {
         ) {
             Icon(
                 Icons.Rounded.Call,
-                contentDescription = "Phone"
+                contentDescription = "Phone",
+                modifier = Modifier.size(24.dp) // Set the size you want here
             )
         }
     }

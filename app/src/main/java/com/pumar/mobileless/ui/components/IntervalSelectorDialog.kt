@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pumar.mobileless.utils.parseStringToArray
 import com.pumar.mobileless.utils.parseStringToArrayInt
@@ -100,7 +101,7 @@ fun IntervalSelectorDialog(handleClose: () -> Unit) {
         TimeSelect(endTime, "End") { onChangeEndTime(it) }
         DaySelector(selectedDays) { selectedDays = it }
         Column( modifier = Modifier.padding(16.dp) ) {
-            Text("Apply", modifier = Modifier
+            Text("Apply", fontSize = 20.sp, modifier = Modifier
                 .clickable { applyConf(); handleClose() })
         }
     }
