@@ -45,14 +45,14 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
                 color = Color.White
             )
         }
-        Row (modifier = Modifier.padding(bottom = 18.dp)) {
+        Row (modifier = Modifier.padding(bottom = 9.dp, top = 9.dp)) {
             Text(text = stringResource(R.string.modo_focus_explanation), fontSize = 18.sp)
         }
-        Row (modifier = Modifier.padding(bottom = 18.dp)) {
+        Row (modifier = Modifier.padding(bottom = 9.dp, top = 9.dp)) {
             Text(text = stringResource(R.string.modo_focused_selected_apps), fontSize = 18.sp)
         }
 
-        Row (modifier = Modifier.padding(bottom = 20.dp)) {
+        Row (modifier = Modifier.padding(bottom = 9.dp, top = 9.dp)) {
             if (focusedAppList.isEmpty()) {
                 Text(text = stringResource(R.string.no_focused_apps), fontSize = 18.sp)
             }
@@ -65,24 +65,25 @@ fun FocusedModeDialog(handleClose: () -> Unit) {
         }
 
         Text(text = stringResource(R.string.on_per_30m), fontSize = 20.sp, modifier = Modifier
-            .padding(bottom = 12.dp)
+            .padding(bottom = 6.dp, top = 6.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 30)
             })
 
         Text(text = stringResource(R.string.on_per_1h), fontSize = 20.sp, modifier = Modifier
-            .padding(bottom = 12.dp)
+            .padding(bottom = 6.dp, top = 6.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60)
             })
 
         Text(text = stringResource(R.string.on_per_2h), fontSize = 20.sp, modifier = Modifier
-            .padding(bottom = 12.dp)
+            .padding(bottom = 6.dp, top = 6.dp)
             .clickable {
                 focusedModeViewModel.setFocusedMode(context, 1000 * 60 * 60 * 2)
             })
 
         Text(text = stringResource(R.string.custom), fontSize = 20.sp, modifier = Modifier
+            .padding(bottom = 6.dp, top = 6.dp)
             .clickable {
                 isModalOpen = true
             })
